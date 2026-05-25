@@ -1,92 +1,30 @@
-<!DOCTYPE html>
-<html lang="ms">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Permohonan Doa</title>
-
-<style>
-
-body{
-    margin:0;
-    overflow:hidden;
-    font-family: Arial, sans-serif;
-    background:url('background.png') no-repeat center center;
-    background-size:cover;
-    width:100vw;
-    height:100vh;
-}
-
-.overlay{
-    position:absolute;
-    top:9%;
-    left:14%;
-    width:72%;
-    height:63%;
-    background:rgba(60,104,177,0.95);
-    border-radius:50px;
-    padding:40px;
-    box-sizing:border-box;
-
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-}
-
-#doaText{
-    color:white;
-    font-size:2.2vw;
-    line-height:1.5;
-    font-weight:500;
-    animation: fade 1s ease;
-}
-
-@keyframes fade{
-    from{
-        opacity:0;
-        transform:translateY(20px);
-    }
-
-    to{
-        opacity:1;
-        transform:translateY(0);
-    }
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="overlay">
-    <div id="doaText">
-        Sedang memuatkan permohonan doa...
-    </div>
-</div>
-
 <script>
 
 const API_URL = "YOUR_SCRIPT_WEBAPP_URL";
+
+let doaList = [];
 
 async function loadDoa(){
 
     try{
 
         const response = await fetch(API_URL);
-        const data = await response.json();
+        doaList = await response.json();
 
-        if(data.length === 0){
+        if(doaList.length === 0){
+
             document.getElementById("doaText").innerHTML =
             "Belum ada permohonan doa.";
+
             return;
         }
 
-        showRandomDoa(data);
+        showRandomDoa();
 
-        setInterval(()=>{
-            showRandomDoa(data);
+        setInterval(() => {
+
+            showRandomDoa();
+
         }, 10000);
 
     }catch(err){
@@ -98,18 +36,24 @@ async function loadDoa(){
     }
 }
 
-function showRandomDoa(data){
+function showRandomDoa(){
 
     const random =
-        data[Math.floor(Math.random() * data.length)];
+        doaList[Math.floor(Math.random() * doaList.length)];
 
-    document.getElementById("doaText").innerHTML =
-        `“${random.doa}”`;
+    document.getElementById("doaText").innerHTML = `
+
+    <div style="font-size:1.2vw;opacity:0.8;margin-bottom:15px;">
+        ${random.nama} • ${random.muqami}
+    </div>
+
+    <div>
+        “${random.doa}”
+    </div>
+
+    `;
 }
 
 loadDoa();
 
 </script>
-
-</body>
-</html>
